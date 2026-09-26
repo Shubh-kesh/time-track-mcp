@@ -1,0 +1,183 @@
+curl -i \
+  -X POST http: //127.0.0.1:8000/mcp/ \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "test-client",
+      "version": "1.0.0"
+    }
+  }
+}'
+
+
+
+curl -i \
+  -X POST http: //127.0.0.1:8000/mcp/ \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "Mcp-Session-Id: 6bc4c1c58d03456e9e1d088c448b6dd9" \
+  -d '{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/list"
+}'
+
+ {
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "tools": [
+      {
+        "_meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "description": "Log a time entry. entry_date must be YYYY-MM-DD. Shows up on the website immediately.",
+        "inputSchema": {
+          "properties": {
+            "employee_name": {
+              "type": "string"
+            },
+            "project": {
+              "type": "string"
+            },
+            "entry_date": {
+              "type": "string"
+            },
+            "hours": {
+              "type": "number"
+            },
+            "description": {
+              "default": "",
+              "type": "string"
+            }
+          },
+          "required": [
+            "employee_name",
+            "project",
+            "entry_date",
+            "hours"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "name": "log_time",
+        "outputSchema": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "title": "Log Time"
+      },
+      {
+        "_meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "description": "Get one employee's logged entries, optionally filtered to a date range (YYYY-MM-DD).",
+        "inputSchema": {
+          "properties": {
+            "employee_name": {
+              "type": "string"
+            },
+            "start_date": {
+              "default": "",
+              "type": "string"
+            },
+            "end_date": {
+              "default": "",
+              "type": "string"
+            }
+          },
+          "required": [
+            "employee_name"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "name": "get_timesheet",
+        "outputSchema": {
+          "properties": {
+            "result": {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "result"
+          ],
+          "type": "object",
+          "x-fastmcp-wrap-result": true
+        },
+        "title": "Get Timesheet"
+      },
+      {
+        "_meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "description": "Get total hours logged against a project, broken down by employee.",
+        "inputSchema": {
+          "properties": {
+            "project": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "project"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "name": "get_project_summary",
+        "outputSchema": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "title": "Get Project Summary"
+      },
+      {
+        "_meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "description": "List every project that has at least one logged timeentry.",
+        "inputSchema": {
+          "properties": {},
+          "type": "object",
+          "additionalProperties": false
+        },
+        "name": "list_projects",
+        "outputSchema": {
+          "properties": {
+            "result": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "result"
+          ],
+          "type": "object",
+          "x-fastmcp-wrap-result": true
+        },
+        "title": "List Projects"
+      }
+    ]
+  }
+}
